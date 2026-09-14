@@ -1,16 +1,16 @@
 # Дизайн-проект клумбы
 
-Публичный репозиторий: https://github.com/SmMaksCHCG/klumba-design
+Смотреть без клонирования: [открыть страницу](https://smmakschcg.github.io/klumba-design/)
 
-Картинки смешанного цветника: визуализация и план посадки.
+На странице две вкладки: визуализация и план посадки.
+
+Репозиторий: https://github.com/SmMaksCHCG/klumba-design
 
 В составе: 2 куста пиона, 3 лилии, флокс, лаванда, гладиолусы, анютины глазки, низкая гвоздика, эхинацея и шалфей.
 
-## Как запустить
+## Как запустить локально
 
 ```bash
-git clone https://github.com/SmMaksCHCG/klumba-design.git
-cd klumba-design
 npm install
 npm run dev
 ```
