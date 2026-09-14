@@ -122,12 +122,12 @@
     <script>
       const views = {
         view: {
-          file: "./visualization.b64",
+          parts: ["./visualization.b64.1", "./visualization.b64.2", "./visualization.b64.3", "./visualization.b64.4"],
           title: "Визуализация",
           alt: "Перспективный вид смешанной клумбы с пионами, лилиями, флоксом, лавандой, гладиолусами, анютиными глазками и низкой гвоздикой",
         },
         plan: {
-          file: "./plan.b64",
+          parts: ["./plan.b64.1", "./plan.b64.2", "./plan.b64.3"],
           title: "План посадки",
           alt: "Схема клумбы сверху с подписями растений",
         },
@@ -141,9 +141,14 @@
 
       async function load(id) {
         if (!cache[id]) {
-          const response = await fetch(views[id].file);
-          if (!response.ok) throw new Error("Не удалось загрузить " + views[id].file);
-          cache[id] = "data:image/webp;base64," + (await response.text()).trim();
+          const texts = await Promise.all(
+            views[id].parts.map(async (file) => {
+              const response = await fetch(file);
+              if (!response.ok) throw new Error("Не удалось загрузить " + file);
+              return (await response.text()).trim();
+            }),
+          );
+          cache[id] = "data:image/webp;base64," + texts.join("");
         }
         return cache[id];
       }
