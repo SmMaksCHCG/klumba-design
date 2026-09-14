@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Дизайн-проект клумбы</title>
+    <style>
+      :root {
+        --bg: #f4efe6;
+        --paper: #fffaf3;
+        --ink: #2c261f;
+        --muted: #6b5f52;
+        --line: #e4d8c8;
+        --sage: #5d6b4a;
+        --rose: #b76e79;
+        --sans: "Segoe UI", system-ui, sans-serif;
+        --serif: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+      }
+      * { box-sizing: border-box; }
+      html, body { min-height: 100%; margin: 0; }
+      body {
+        font-family: var(--sans);
+        color: var(--ink);
+        background:
+          radial-gradient(1200px 600px at 10% -10%, #fbeee3 0%, transparent 55%),
+          radial-gradient(900px 500px at 100% 0%, #e8efe0 0%, transparent 50%),
+          var(--bg);
+      }
+      .page { max-width: 1080px; margin: 0 auto; padding: 32px 20px 56px; }
+      .header { text-align: center; margin-bottom: 28px; }
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--sage);
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-family: var(--serif);
+        font-size: clamp(32px, 5vw, 48px);
+        font-weight: 500;
+        letter-spacing: -0.03em;
+      }
+      .lede {
+        margin: 0 auto 24px;
+        max-width: 42rem;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 16px;
+      }
+      .tabs {
+        display: inline-flex;
+        gap: 8px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--paper);
+      }
+      .tab {
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        padding: 8px 16px;
+        border-radius: 999px;
+        cursor: pointer;
+        font: inherit;
+      }
+      .tab.is-active { background: var(--sage); color: #f8f6ef; }
+      .tab:disabled { cursor: wait; opacity: 0.7; }
+      .frame {
+        margin: 0;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 18px 40px rgba(70, 52, 36, 0.08);
+      }
+      .frame img { width: 100%; height: auto; display: block; background: #efe7da; }
+      .status {
+        margin: 0;
+        padding: 72px 24px;
+        text-align: center;
+        color: var(--muted);
+      }
+      .status.is-error { color: #8a3b3b; }
+      .frame figcaption {
+        padding: 12px 16px 16px;
+        text-align: center;
+        color: var(--rose);
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      @media (max-width: 640px) {
+        .page { padding: 20px 14px 40px; }
+        .lede { font-size: 15px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <p class="eyebrow">Смешанный цветник</p>
+        <h1>Дизайн-проект клумбы</h1>
+        <p class="lede">
+          Два куста пиона, три лилии, флокс, лаванда, гладиолусы, анютины глазки
+          и низкая гвоздика. Дополнили эхинацеей и шалфеем.
+        </p>
+        <nav class="tabs" aria-label="Виды проекта">
+          <button type="button" class="tab is-active" data-view="view" disabled>Визуализация</button>
+          <button type="button" class="tab" data-view="plan" disabled>План посадки</button>
+        </nav>
+      </header>
+      <figure class="frame">
+        <p class="status" id="status">Загружаем картинки клумбы…</p>
+        <img id="picture" alt="" hidden />
+        <figcaption id="caption" hidden>Визуализация</figcaption>
+      </figure>
+    </main>
+    <script>
+      const views = {
+        view: {
+          file: "./visualization.b64",
+          title: "Визуализация",
+          alt: "Перспективный вид смешанной клумбы с пионами, лилиями, флоксом, лавандой, гладиолусами, анютиными глазками и низкой гвоздикой",
+        },
+        plan: {
+          file: "./plan.b64",
+          title: "План посадки",
+          alt: "Схема клумбы сверху с подписями растений",
+        },
+      };
+
+      const picture = document.getElementById("picture");
+      const caption = document.getElementById("caption");
+      const status = document.getElementById("status");
+      const buttons = document.querySelectorAll(".tab");
+      const cache = {};
+
+      async function load(id) {
+        if (!cache[id]) {
+          const response = await fetch(views[id].file);
+          if (!response.ok) throw new Error("Не удалось загрузить " + views[id].file);
+          cache[id] = "data:image/webp;base64," + (await response.text()).trim();
+        }
+        return cache[id];
+      }
+
+      function show(id) {
+        picture.src = cache[id];
+        picture.alt = views[id].alt;
+        picture.hidden = false;
+        caption.textContent = views[id].title;
+        caption.hidden = false;
+        status.hidden = true;
+        buttons.forEach((button) => {
+          button.classList.toggle("is-active", button.dataset.view === id);
+        });
+      }
+
+      async function start() {
+        try {
+          await Promise.all([load("view"), load("plan")]);
+          buttons.forEach((button) => {
+            button.disabled = false;
+            button.addEventListener("click", () => show(button.dataset.view));
+          });
+          show("view");
+        } catch (error) {
+          status.textContent = "Не получилось открыть картинки. Обновите страницу.";
+          status.classList.add("is-error");
+          status.hidden = false;
+          console.error(error);
+        }
+      }
+
+      start();
+    </script>
+  </body>
+</html>
