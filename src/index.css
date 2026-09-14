@@ -1,0 +1,43 @@
+:root {
+  --bg: #f4efe6;
+  --paper: #fffaf3;
+  --ink: #2c261f;
+  --muted: #6b5f52;
+  --line: #e4d8c8;
+  --sage: #5d6b4a;
+  --rose: #b76e79;
+  --sans: 'Segoe UI', system-ui, sans-serif;
+  --serif: 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--sans);
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #fbeee3 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, #e8efe0 0%, transparent 50%),
+    var(--bg);
+}
+
+#root {
+  min-height: 100svh;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font: inherit;
+}
